@@ -14,13 +14,12 @@ namespace HotkeyCommandF
      * 
      * HKeys List<short> will need to be set before use.
      * This takes number values between 1 and 12 then convert them to F* keys.
-     * Most calls to the HotKeyFunctions are dynamically called using Reflection.
      * 
      * InitiateHotKeys() will take the HKeys list and call the hooks.
      * HotkeyCommand.KeyActionCall action will fire when hotkey is pressed.
-     */
-
-    /*
+     * 
+     * ---
+     * 
      * Reference HotkeyCommandF.dll in the Forms.cs.
      * - Set the Extension method next to your Form class.
      * - Create new instance of HotkeyCommand
@@ -42,7 +41,7 @@ namespace HotkeyCommandF
                 {
                     InitializeComponent();
 
-                    //Configure Hotkeys
+                    //Configure Hotkeys (F1, F2, and F3
                     HotkeyCommand hotkeyComm = new HotkeyCommand(this, new short[] { 1, 2, 3 });
                     hotkeyComm.InitiateHotKeys();
 
