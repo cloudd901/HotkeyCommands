@@ -1,11 +1,11 @@
 # HotkeyCommand
 Resource to add Hotkey shortcuts to any form.
 
-The 'new HotKeys' class requires a <Form> and a List<short>.
+The 'new HotKeys' class requires a Form and a List-short.
 
-The <Form> will be used as the button press receiver.
+The Form will be used as the button press receiver.
 
-HKeys List<short> will need to be set before use.
+HKeys List-short will need to be set before use.
 This takes a string representation of your key.
 
 InitiateHotKeys() will take the HKeys list and call the hooks.
