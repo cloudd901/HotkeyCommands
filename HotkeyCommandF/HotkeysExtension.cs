@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace HotkeyCommandF.HKCFormExtension
+namespace HotkeyCommand.HKCFormExtension
 {
     public class HotkeysExtensionForm : Form
     {
@@ -13,7 +13,7 @@ namespace HotkeyCommandF.HKCFormExtension
             KeyPreview = true;
             if (m.Msg == 0x0312)//Msg ID for Hotkeys
             {
-                OnKeyPressedCall(m.WParam);//Custom Shortcut ID (1-12)
+                OnKeyPressedCall(m.WParam);
             }
 
             base.WndProc(ref m);

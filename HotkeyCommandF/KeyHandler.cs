@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace HotkeyCommandF
+namespace HotkeyCommand
 {
     public class KeyHandler
     {
