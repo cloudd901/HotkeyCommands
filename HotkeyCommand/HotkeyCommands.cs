@@ -1,11 +1,11 @@
-﻿using HotkeyCommand.HKCFormExtension;
+﻿using HotkeyCommands.HKCFormExtension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace HotkeyCommand
+namespace HotkeyCommands
 {
     /* 
      * new HotKeys class requires a <Form> and a List<short>.
@@ -28,8 +28,8 @@ namespace HotkeyCommand
      * Example:
      * 
 
-        using HotkeyCommand;
-        using HotkeyCommand.HKCFormExtension;
+        using HotkeyCommands;
+        using HotkeyCommands.HKCFormExtension;
         using System;
         using System.Windows.Forms;
 

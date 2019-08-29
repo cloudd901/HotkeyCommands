@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HotkeyCommand.cs" />
+    <Compile Include="HotkeyCommands.cs" />
     <Compile Include="HotkeysExtension.cs">
       <SubType>Form</SubType>
     </Compile>
