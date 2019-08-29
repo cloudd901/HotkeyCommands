@@ -16,7 +16,7 @@ ________________________________________________________________
 - Reference HotkeyCommandF.dll in the Forms.cs.
 - Set the Extension method next to your Form class.
 - Create new instance of HotkeyCommand
-- Set Action KeyActionCall (Returns Form and short to represent F key)
+- Set Action KeyActionCall (Uses Form and string)-(Current Form and Key Pressed)
 
 ________________________________________________________________
 
@@ -39,7 +39,7 @@ Example:
 		    HotkeyCommand hotkeyComm = new HotkeyCommand(this, new string[] { "F1", "F2", "Escape", "F3" });
 		    hotkeyComm.InitiateHotKeys();
 
-		    //Returns Form and short to represent the originating Form and F key representation
+		    //Returns Form and string to represent the originating Form and Key representation
 		    hotkeyComm.KeyActionCall += onKeyAction;
 		}
 	    }
