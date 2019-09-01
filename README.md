@@ -38,6 +38,7 @@ Setup Example:
 
 Adding and Removing Hotkeys Example:
 
+	----------
 	HotkeyCommands hotkeyComm = new HotkeyCommands(this);
 	hotkeyComm.HotkeyRegisterList(new string[] { "F1", "F2", "F3" });
 	hotkeyComm.KeyActionCall += onKeyAction;
@@ -46,10 +47,11 @@ Adding and Removing Hotkeys Example:
 	hotkeyComm.HotkeyUnregisterAll(); //Removes and unregisters all keys in the Dictionary
 	hotkeyComm.HotkeyRegister("F4").HotkeyRegister("{Shift}F4"); //Stacking is allowed
 	hotkeyComm.HotkeyUnregister("F4");
-        hotkeyComm._RestartHotkeys();
+	hotkeyComm._RestartHotkeys();
 	
-	//This example leaves only Hotkey "{Shift}F4" active.
+	//The example above leaves only Hotkey "{Shift}F4" active.
 	
+	----------
 	HotkeyCommands hotkeyComm = new HotkeyCommands(this);
 	hotkeyComm.HotkeyRegisterList(new string[] { "F1", "F2", "F3" });
 	hotkeyComm.KeyActionCall += onKeyAction;
@@ -60,7 +62,7 @@ Adding and Removing Hotkeys Example:
 	hotkeyComm.HotkeyUnregister("F4");
         hotkeyComm._RestartHotkeys(); //All keys in the dictionary get reregistered on Start or Restart.
 	
-	//This example leaves Hotkeys "F1", "F2", "F3", and "{Shift}F4" active.
+	//The example above leaves Hotkeys "F1", "F2", "F3", and "{Shift}F4" active.
 
 
 Other Options:
@@ -69,7 +71,7 @@ Other Options:
 	hotkeyComm.SetHotkeysGlobally = true;
 	
 	//False will throw exceptions when something fails to work.
-        hotkeyComm.SetSuppressExceptions = false;
+	hotkeyComm.SetSuppressExceptions = false;
 	
 	//Returns the dictionary used to store <string> Hotkeys and their <short> ID's.
 	//Upon _StartHotkeys, all dicitonary keys will be registered/activated.
