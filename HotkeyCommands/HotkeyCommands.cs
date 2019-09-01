@@ -59,6 +59,8 @@ namespace HotkeyCommands
         const uint WM_KEYDOWN = 0x100;
         const uint WM_KEYUP = 0x101;
 
+        private readonly Form _form;
+
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
@@ -71,12 +73,12 @@ namespace HotkeyCommands
         public delegate void KeyActionCallEventHandler(Form form, short id, string key);
         /// <summary>Occurs when Hotkey is called.</summary>
         public event KeyActionCallEventHandler KeyActionCall;
-
         /// <summary>Gets the Dictionary of all current Hotkeys.</summary>
         /// <value>The Dictionary of Hotkeys.</value>
-        public Dictionary<short, string> HotkeyDictionary { get; } = new Dictionary<short, string>();
-        private readonly Form _form;
-        private bool registered = false;
+        public Dictionary<short, string> HotkeyDictionary { get; private set; } = new Dictionary<short, string>();
+        /// <summary>Check if Hotkeys are active.</summary>
+        /// <value>Get the Hotkey status.</value>
+        public bool IsRegistered { get; private set; } = false;
         /// <summary>Gets or sets a value indicating whether Hotkeys trigger regardless of active window.</summary>
         /// <value>
         ///   <c>true</c> if [set Hotkeys globally]; otherwise, <c>false</c>.</value>
@@ -338,28 +340,28 @@ namespace HotkeyCommands
         /// <exception cref="InvalidOperationException">HotkeyCommands is already Initiated. Try stopping first.</exception>
         public void _StartHotkeys()
         {
-            if (registered)
+            if (IsRegistered)
             {
                 if (!SetSuppressExceptions)
                 { throw new InvalidOperationException("HotkeyCommands is already Initiated. Try stopping first."); }
                 else { return; }
             }
             else
-            { registered = true; }
+            { IsRegistered = true; }
             RegAllDictionary();
         }
         /// <summary>Stop using hotkeys.</summary>
         /// <exception cref="InvalidOperationException">HotkeyCommands is not started. Try starting it first.</exception>
         public void _StopHotkeys()
         {
-            if (!registered)
+            if (!IsRegistered)
             {
                 if (!SetSuppressExceptions)
                 { throw new InvalidOperationException("HotkeyCommands is not started. Try starting it first."); }
                 else { return; }
             }
             else
-            { registered = false; }
+            { IsRegistered = false; }
             HotkeyUnregisterAll(false);
         }
         /// <summary>Quickly Stop and Restart the hotkeys. Only use if already Started.</summary>
