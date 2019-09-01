@@ -24,7 +24,7 @@ Setup Example:
 		    InitializeComponent();
 
 		    //Configure Hotkeys
-		    HotkeyCommands hotkeyComm = new HotkeyCommands(this, new string[] { "F1", "Escape", "{CTRL}{Shift}A" });
+		    HotkeyCommands hotkeyComm = new HotkeyCommands(this, new string[] { "Escape", "{CTRL}{Shift}A" });
 		    hotkeyComm._StartHotkeys();
 		    hotkeyComm.KeyActionCall += onKeyAction;
 		}
@@ -60,7 +60,7 @@ Adding and Removing Hotkeys Example:
 	hotkeyComm.HotkeyUnregisterAll(false); //unregisters keys but leaves them in the dictionary.
 	hotkeyComm.HotkeyRegister("F4").HotkeyRegister("{Shift}F4"); //Stacking is allowed
 	hotkeyComm.HotkeyUnregister("F4");
-        hotkeyComm._RestartHotkeys(); //All keys in the dictionary get reregistered on Start or Restart.
+	hotkeyComm._RestartHotkeys(); //All keys in the dictionary get reregistered on Start or Restart.
 	
 	//The example above leaves Hotkeys "F1", "F2", "F3", and "{Shift}F4" active.
 
