@@ -1,4 +1,4 @@
-# HotkeyCommand
+# HotkeyCommands
 Resource to add Hotkey shortcuts to any form.
 
 The 'new HotKeys' class requires a Form and a List-short.
@@ -9,21 +9,21 @@ HKeys List-short will need to be set before use.
 This takes a string representation of your key.
 
 InitiateHotKeys() will take the HKeys list and call the hooks.
-HotkeyCommand.KeyActionCall action will fire when hotkey is pressed.
+HotkeyCommands.KeyActionCall action will fire when hotkey is pressed.
 
 ________________________________________________________________
 
-- Reference HotkeyCommandF.dll in the Forms.cs.
+- Reference HotkeyCommands.dll in the Forms.cs.
 - Set the Extension method next to your Form class.
-- Create new instance of HotkeyCommand
+- Create new instance of HotkeyCommands
 - Set Action KeyActionCall (Uses Form and string)-(Current Form and Key Pressed)
 
 ________________________________________________________________
 
 Example:
 
-	using HotkeyCommand;
-	using HotkeyCommand.HKCFormExtension;
+	using HotkeyCommands;
+	using HotkeyCommands.HKCFormExtension;
 	using System;
 	using System.Windows.Forms;
 
