@@ -82,3 +82,5 @@ Other Options:
 	
 	HotkeyRegister and HotkeyRegisterList gives the options to add custom ID's to the Dictionary.
 	
+	KeyRegisteredCall is an event fired when a key is registered. Returns true or false.
+	
