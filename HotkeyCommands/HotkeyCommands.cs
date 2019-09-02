@@ -66,7 +66,14 @@ namespace HotkeyCommands
         [DllImport("user32.dll")]
         private static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
-        /// <summary>EventHandler for Hotkey events.</summary>
+        /// <summary>EventHandler for Hotkey Registration events.</summary>
+        /// <param name="result"><c>true</c> if the registration was successfull.</param>
+        /// <param name="key">The Hotkey being registered.</param>
+        public delegate void KeyRegisteredEventHandler(bool result, string key);
+        /// <summary>Occurs when Hotkey is Registered.</summary>
+        public event KeyRegisteredEventHandler KeyRegisteredCall;
+
+        /// <summary>EventHandler for Hotkey Pressed events.</summary>
         /// <param name="form">The form.</param>
         /// <param name="id">The identifier.</param>
         /// <param name="key">The key.</param>
@@ -296,7 +303,8 @@ namespace HotkeyCommands
                 }
                 try
                 {
-                    new KeyHandler((Keys)Enum.Parse(typeof(Keys), keyString, true), _form.Handle, p.Key, km).Register();
+                    bool test = new KeyHandler((Keys)Enum.Parse(typeof(Keys), keyString, true), _form.Handle, p.Key, km).Register();
+                    KeyRegisteredCall?.Invoke(test, p.Value);
                 }
                 catch (Exception e)
                 {
