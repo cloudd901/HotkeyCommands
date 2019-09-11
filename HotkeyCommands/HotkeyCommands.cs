@@ -318,7 +318,6 @@ namespace HotkeyCommands
                 {
                     HotkeyUnregisterAll(false);
                     if (!SetSuppressExceptions) { throw new InvalidOperationException(e.Message); } else { }
-                    KeyUnregisteredCall?.Invoke(p.Value, p.Key);
                 }
             }
         }
@@ -348,6 +347,7 @@ namespace HotkeyCommands
                 {
                     if (clearCurrentKeys) { HotkeyDictionary.Remove(p.Key); }
                     new KeyHandler((Keys)Enum.Parse(typeof(Keys), keyString, true), _form.Handle, p.Key, km).Unregister();
+                    KeyUnregisteredCall?.Invoke(p.Value, p.Key);
                 }
                 catch { }
             }
