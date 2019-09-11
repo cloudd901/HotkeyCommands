@@ -69,9 +69,17 @@ namespace HotkeyCommands
         /// <summary>EventHandler for Hotkey Registration events.</summary>
         /// <param name="result"><c>true</c> if the registration was successfull.</param>
         /// <param name="key">The Hotkey being registered.</param>
-        public delegate void KeyRegisteredEventHandler(bool result, string key);
+        /// <param name="id">They ID of the Hotkey being registered</param>
+        public delegate void KeyRegisteredEventHandler(bool result, string key, short id);
         /// <summary>Occurs when Hotkey is Registered.</summary>
         public event KeyRegisteredEventHandler KeyRegisteredCall;
+
+        /// <summary>EventHandler for Hotkey Unregistration events.</summary>
+        /// <param name="key">The Hotkey being unregistered.</param>
+        /// <param name="id">They ID of the Hotkey being unregistered</param>
+        public delegate void KeyUnregisteredEventHandler(string key, short id);
+        /// <summary>Occurs when Hotkey is Unregistered.</summary>
+        public event KeyUnregisteredEventHandler KeyUnregisteredCall;
 
         /// <summary>EventHandler for Hotkey Pressed events.</summary>
         /// <param name="form">The form.</param>
@@ -304,12 +312,13 @@ namespace HotkeyCommands
                 try
                 {
                     bool test = new KeyHandler((Keys)Enum.Parse(typeof(Keys), keyString, true), _form.Handle, p.Key, km).Register();
-                    KeyRegisteredCall?.Invoke(test, p.Value);
+                    KeyRegisteredCall?.Invoke(test, p.Value, p.Key);
                 }
                 catch (Exception e)
                 {
                     HotkeyUnregisterAll(false);
                     if (!SetSuppressExceptions) { throw new InvalidOperationException(e.Message); } else { }
+                    KeyUnregisteredCall?.Invoke(p.Value, p.Key);
                 }
             }
         }
