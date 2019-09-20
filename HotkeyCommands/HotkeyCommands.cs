@@ -384,13 +384,13 @@ namespace HotkeyCommands
         /// <summary>Quickly Stop and Restart the hotkeys. Only use if already Started.</summary>
         public void _RestartHotkeys()
         {
-            _StopHotkeys();
+            if (IsRegistered) { _StopHotkeys(); }
             _StartHotkeys();
         }
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
-            _StopHotkeys();
+            if (IsRegistered) { _StopHotkeys(); }
             try
             { (_form as HotkeysExtensionForm).KeyPressedCall -= OnKeyActionCall; }
             catch
