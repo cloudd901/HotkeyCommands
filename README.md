@@ -29,12 +29,13 @@ Setup Example:
 		    hotkeyComm.KeyActionCall += onKeyAction;
 		}
 	    }
-	}
 	
 	public static void onKeyAction(Form form, short id, string key)
         {
             //do something with "key" or 'id'
         }
+	
+	}
 
 Adding and Removing Hotkeys Example:
 
