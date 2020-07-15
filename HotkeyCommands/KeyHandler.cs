@@ -19,7 +19,7 @@ namespace PCAFFINITY
         private readonly HotkeyCommand.KeyModifier fsModifiers;
 
         /// <exclude />
-        public KeyHandler(Keys newKey, IntPtr newHandle, int newId, HotkeyCommand.KeyModifier newModifiers)
+        public KeyHandler(int newKey, IntPtr newHandle, int newId, HotkeyCommand.KeyModifier newModifiers)
         {
             key = (int)newKey;
             hWnd = newHandle;

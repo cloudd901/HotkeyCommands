@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace PCAFFINITY
 {
@@ -293,7 +294,7 @@ namespace PCAFFINITY
 
         private void RegAllDictionary()
         {
-            foreach (var p in HotkeyDictionary)
+            foreach (KeyValuePair<short, string> p in HotkeyDictionary)
             {
                 string keyString = p.Value;
                 KeyModifier km = new KeyModifier();
@@ -311,7 +312,100 @@ namespace PCAFFINITY
                 }
                 try
                 {
-                    bool test = new KeyHandler((Keys)Enum.Parse(typeof(Keys), keyString, true), _form.Handle, p.Key, km).Register();
+                    int keys = (int)Keys.None;
+
+                    string filteredKeys = keyString.ToUpper();
+
+                    if (filteredKeys != "")
+                    {
+                        if (filteredKeys.Contains("PRINTSCREEN"))
+                        { keys = (int)Keys.PrintScreen; filteredKeys.Replace("PRINTSCREEN", ""); }
+                        else if (filteredKeys.Contains("PRINTSCRN"))
+                        { keys = (int)Keys.PrintScreen; filteredKeys.Replace("PRINTSCRN", ""); }
+
+                        else if (filteredKeys.Contains("PRINT"))
+                        { keys = (int)Keys.Print; filteredKeys.Replace("PRINT", ""); }
+
+                        else if (filteredKeys.Contains("PLAY"))
+                        { keys = (int)Keys.Play; filteredKeys.Replace("PLAY", ""); }
+                        else if (filteredKeys.Contains("PAUSE"))
+                        { keys = (int)Keys.Pause; filteredKeys.Replace("PAUSE", ""); }
+
+                        else if (filteredKeys.Contains("LWIN"))
+                        { keys = (int)Keys.LWin; filteredKeys.Replace("LWIN", ""); }
+                        else if (filteredKeys.Contains("RWIN"))
+                        { keys = (int)Keys.RWin; filteredKeys.Replace("RWIN", ""); }
+                        else if (filteredKeys.Contains("WIN"))
+                        { keys = (int)Keys.LWin; filteredKeys.Replace("WIN", ""); }
+
+                        else if (filteredKeys.Contains("UP"))
+                        { keys = (int)Keys.Up; filteredKeys.Replace("UP", ""); }
+                        else if (filteredKeys.Contains("DOWN"))
+                        { keys = (int)Keys.Down; filteredKeys.Replace("DOWN", ""); }
+                        else if (filteredKeys.Contains("LEFT"))
+                        { keys = (int)Keys.Left; filteredKeys.Replace("LEFT", ""); }
+                        else if (filteredKeys.Contains("RIGHT"))
+                        { keys = (int)Keys.Right; filteredKeys.Replace("RIGHT", ""); }
+
+                        else if (filteredKeys.Contains("SPACE"))
+                        { keys = (int)Keys.Space; filteredKeys.Replace("SPACE", ""); }
+                        else if (filteredKeys.Contains("SPC"))
+                        { keys = (int)Keys.Space; filteredKeys.Replace("SPC", ""); }
+                        else if (filteredKeys.Contains("ESCAPE"))
+                        { keys = (int)Keys.Escape; filteredKeys.Replace("ESCAPE", ""); }
+                        else if (filteredKeys.Contains("ESC"))
+                        { keys = (int)Keys.Escape; filteredKeys.Replace("ESC", ""); }
+                        else if (filteredKeys.Contains("CLEAR"))
+                        { keys = (int)Keys.OemClear; filteredKeys.Replace("CLEAR", ""); }
+                        else if (filteredKeys.Contains("CLR"))
+                        { keys = (int)Keys.OemClear; filteredKeys.Replace("CLR", ""); }
+                        else if (filteredKeys.Contains("CAPSLOCK"))
+                        { keys = (int)Keys.CapsLock; filteredKeys.Replace("CAPSLOCK", ""); }
+                        else if (filteredKeys.Contains("END"))
+                        { keys = (int)Keys.End; filteredKeys.Replace("END", ""); }
+                        else if (filteredKeys.Contains("HOME"))
+                        { keys = (int)Keys.Home; filteredKeys.Replace("HOME", ""); }
+                        else if (filteredKeys.Contains("INSERT"))
+                        { keys = (int)Keys.Insert; filteredKeys.Replace("INSERT", ""); }
+                        else if (filteredKeys.Contains("PAGEUP"))
+                        { keys = (int)Keys.PageUp; filteredKeys.Replace("PAGEUP", ""); }
+                        else if (filteredKeys.Contains("PGUP"))
+                        { keys = (int)Keys.PageUp; filteredKeys.Replace("PGUP", ""); }
+                        else if (filteredKeys.Contains("PAGEDOWN"))
+                        { keys = (int)Keys.PageDown; filteredKeys.Replace("PAGEDOWN", ""); }
+                        else if (filteredKeys.Contains("PGDOWN"))
+                        { keys = (int)Keys.PageDown; filteredKeys.Replace("PGDOWN", ""); }
+
+                        else if (filteredKeys == "]")
+                        { keys = (int)Keys.OemCloseBrackets; }
+                        else if (filteredKeys == "[")
+                        { keys = (int)Keys.OemOpenBrackets; }
+                        else if (filteredKeys == ",")
+                        { keys = (int)Keys.Oemcomma; }
+                        else if (filteredKeys == ".")
+                        { keys = (int)Keys.OemPeriod; }
+                        else if (filteredKeys == "?")
+                        { keys = (int)Keys.OemQuestion; }
+                        else if (filteredKeys == "\"")
+                        { keys = (int)Keys.OemQuotes; }
+                        else if (filteredKeys == "\"")
+                        { keys = (int)Keys.OemQuotes; }
+                        else if (filteredKeys == "|")
+                        { keys = (int)Keys.OemPipe; }
+                        else if (filteredKeys == "+")
+                        { keys = (int)Keys.Oemplus; }
+                        else if (filteredKeys == "-")
+                        { keys = (int)Keys.OemMinus; }
+                        else if (filteredKeys == "*")
+                        { keys = (int)Keys.Multiply; }
+                        else if (filteredKeys == "`")
+                        { keys = (int)Keys.Oemtilde; }
+                        else
+                        { keys = (int)Enum.Parse(typeof(Keys), filteredKeys, true); }
+                    }
+
+                    bool test = new KeyHandler(keys, _form.Handle, p.Key, km).Register();
+
                     KeyRegisteredCall?.Invoke(test, p.Value, p.Key);
                 }
                 catch (Exception e)
@@ -346,7 +440,7 @@ namespace PCAFFINITY
                 try
                 {
                     if (clearCurrentKeys) { HotkeyDictionary.Remove(p.Key); }
-                    new KeyHandler((Keys)Enum.Parse(typeof(Keys), keyString, true), _form.Handle, p.Key, km).Unregister();
+                    new KeyHandler((int)Enum.Parse(typeof(Keys), keyString, true), _form.Handle, p.Key, km).Unregister();
                     KeyUnregisteredCall?.Invoke(p.Value, p.Key);
                 }
                 catch { }
