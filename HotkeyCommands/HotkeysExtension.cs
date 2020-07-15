@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace HotkeyCommands.HKCFormExtension
+namespace PCAFFINITY.HKCFormExtension
 {
     /// <exclude />
     public class HotkeysExtensionForm : Form

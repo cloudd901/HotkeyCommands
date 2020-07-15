@@ -1,11 +1,11 @@
-﻿using HotkeyCommands.HKCFormExtension;
+﻿using PCAFFINITY.HKCFormExtension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace HotkeyCommands
+namespace PCAFFINITY
 {
     /* 
      * - Reference HotkeyCommands.dll in your Forms.cs.
@@ -145,7 +145,7 @@ namespace HotkeyCommands
                     return;
                 }
             }
-            string key; HotkeyDictionary.TryGetValue(id, out key);
+            HotkeyDictionary.TryGetValue(id, out string key);
             KeyActionCall?.Invoke(form, id, key);
         }//Received from 'HotkeysExtension'. Alert new event to HotkeyCommand instance.
 
@@ -355,7 +355,7 @@ namespace HotkeyCommands
 
         /// <summary>Start using hotkeys.</summary>
         /// <exception cref="InvalidOperationException">HotkeyCommands is already Initiated. Try stopping first.</exception>
-        public void _StartHotkeys()
+        public void StartHotkeys()
         {
             if (IsRegistered)
             {
@@ -369,7 +369,7 @@ namespace HotkeyCommands
         }
         /// <summary>Stop using hotkeys.</summary>
         /// <exception cref="InvalidOperationException">HotkeyCommands is not started. Try starting it first.</exception>
-        public void _StopHotkeys()
+        public void StopHotkeys()
         {
             if (!IsRegistered)
             {
@@ -382,15 +382,15 @@ namespace HotkeyCommands
             HotkeyUnregisterAll(false);
         }
         /// <summary>Quickly Stop and Restart the hotkeys. Only use if already Started.</summary>
-        public void _RestartHotkeys()
+        public void RestartHotkeys()
         {
-            if (IsRegistered) { _StopHotkeys(); }
-            _StartHotkeys();
+            if (IsRegistered) { StopHotkeys(); }
+            StartHotkeys();
         }
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
-            if (IsRegistered) { _StopHotkeys(); }
+            if (IsRegistered) { StopHotkeys(); }
             try
             { (_form as HotkeysExtensionForm).KeyPressedCall -= OnKeyActionCall; }
             catch

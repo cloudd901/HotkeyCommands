@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace HotkeyCommands
+namespace PCAFFINITY
 {
     /// <exclude />
     public class KeyHandler
@@ -13,10 +13,10 @@ namespace HotkeyCommands
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        private int key;
-        private IntPtr hWnd;
-        private int id;
-        private HotkeyCommand.KeyModifier fsModifiers;
+        private readonly int key;
+        private readonly IntPtr hWnd;
+        private readonly int id;
+        private readonly HotkeyCommand.KeyModifier fsModifiers;
 
         /// <exclude />
         public KeyHandler(Keys newKey, IntPtr newHandle, int newId, HotkeyCommand.KeyModifier newModifiers)
