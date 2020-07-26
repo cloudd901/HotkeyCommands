@@ -1,5 +1,5 @@
 # HotkeyCommands
-Resource to add Hotkey shortcuts to any form.
+Resource to add Hotkey shortcuts to your WinForms.
 ________________________________________________________________
 
 - Reference HotkeyCommands.dll in the Forms.cs.
