@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace PCAFFINITY.HKCFormExtension
+namespace PCAFFINITY
 {
     /// <exclude />
     public class HotkeysExtensionForm : Form
@@ -20,7 +20,6 @@ namespace PCAFFINITY.HKCFormExtension
             {
                 OnKeyPressedCall(m.WParam);
             }
-
             base.WndProc(ref m);
         }
         /// <exclude />

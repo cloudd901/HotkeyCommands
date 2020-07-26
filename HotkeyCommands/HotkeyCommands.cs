@@ -1,10 +1,8 @@
-﻿using PCAFFINITY.HKCFormExtension;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Windows.Input;
 
 namespace PCAFFINITY
 {
@@ -153,12 +151,12 @@ namespace PCAFFINITY
         /// <summary>Register a list of Hotkeys.</summary>
         /// <param name="newKeyList">The new Hotkey list.</param>
         /// <param name="replaceCurrentKeys">if set to <c>true</c> [replace current List of Hotkeys]. see <see cref="HotkeyDictionary"/></param>
-        public void HotkeyRegisterList(string[] newKeyList, bool replaceCurrentKeys = false)
+        public void HotkeyAddKeyList(string[] newKeyList, bool replaceCurrentKeys = false)
         {
             if (replaceCurrentKeys) { HotkeyUnregisterAll(true); HotkeyDictionary.Clear(); }
             foreach (string s in newKeyList)
             {
-                if (HotkeyDictionary.Values.Contains(s))
+                if (HotkeyDictionary.ContainsValue(s))
                 {
                     short id = HotkeyDictionary.FirstOrDefault(x => x.Value == s).Key;
                     HotkeyDictionary.Remove(id);
@@ -166,12 +164,7 @@ namespace PCAFFINITY
             }
             foreach (string s in newKeyList)
             {
-                short idK;
-                try
-                { idK = (short)((int)HotkeyDictionary.Keys.Max() + 1); }
-                catch
-                { idK = 1; }
-                HotkeyDictionary.Add(idK, s);
+                HotkeyAddKey(s);
             }
         }
         /// <summary>Register a list of Hotkeys.</summary>
@@ -187,9 +180,9 @@ namespace PCAFFINITY
         /// or
         /// '{s}' ID is already in HotkeyDictionary.
         /// </exception>
-        public void HotkeyRegisterList(string[] newKeyList, short[] newIDList, bool replaceCurrentKeys = false)
+        public void HotkeyAddKeyList(string[] newKeyList, short[] newIDList, bool replaceCurrentKeys = false)
         {
-            if (newIDList == null) { HotkeyRegisterList(newKeyList, replaceCurrentKeys); return; }
+            if (newIDList == null) { HotkeyAddKeyList(newKeyList, replaceCurrentKeys); return; }
             if (newIDList.Count() != newKeyList.Count())
             {
                 if (!SetSuppressExceptions)
@@ -208,28 +201,11 @@ namespace PCAFFINITY
 
             if (replaceCurrentKeys) { HotkeyUnregisterAll(true); HotkeyDictionary.Clear(); }
 
-            foreach (string s in newKeyList)
-            {
-                if (HotkeyDictionary.Values.Contains(s))
-                {
-                    if (!SetSuppressExceptions) { throw new InvalidOperationException($"'{s}' Key is already in HotkeyDictionary."); }
-                    else { return; }
-                }
-            }
-            foreach (short s in newIDList)
-            {
-                if (HotkeyDictionary.Keys.Contains(s))
-                {
-                    if (!SetSuppressExceptions) { throw new InvalidOperationException($"'{s}' ID is already in HotkeyDictionary."); }
-                    else { return; }
-                }
-            }
             for (int i = 0; i < newKeyList.Count(); i++)
             {
-                HotkeyDictionary.Add(newIDList[i], newKeyList[i]);
+                HotkeyAddKey(newKeyList[i], newIDList[i]);
             }
         }
-
         /// <summary>Register a single Hotkey to <see cref="HotkeyDictionary"/>.</summary>
         /// <param name="key">The Hotkey.</param>
         /// <param name="id">The Hotkey ID.</param>
@@ -237,9 +213,10 @@ namespace PCAFFINITY
         /// <exception cref="InvalidOperationException">'{key}' Key is already in HotkeyDictionary.
         /// or
         /// ID '{id}' is already registered to key '{key}' in HotkeyDictionary.</exception>
-        public HotkeyCommand HotkeyRegister(string key, short? id = null)
+        public HotkeyCommand HotkeyAddKey(string key, short? id = null)
         {
-            if (HotkeyDictionary.Values.Contains(key))
+            key = key.Trim().ToUpper();
+            if (HotkeyDictionary.ContainsValue(key))
             {
                 if (!SetSuppressExceptions) { throw new InvalidOperationException($"'{key}' Key is already in HotkeyDictionary."); }
                 else { return this; }
@@ -248,17 +225,14 @@ namespace PCAFFINITY
             short idK;
             try
             {
-                if (id == null) { idK = (short)((int)HotkeyDictionary.Keys.Max() + 1); }
+                if (id == null) { idK = (short)((int)HotkeyDictionary.Keys.Count + 1); }
                 else { idK = (short)id; }
             }
             catch
             { idK = 1; }
 
-            string knownKey = null;
             short? knownId = null;
-            try
-            { knownKey = HotkeyDictionary[(short)idK]; }
-            catch { }
+            HotkeyDictionary.TryGetValue((short)idK, out string knownKey);
 
             if (knownKey != null)
             {
@@ -280,145 +254,21 @@ namespace PCAFFINITY
         /// <param name="key">The Hotkey.</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">Unable to Unregister '{key}' key.</exception>
-        public HotkeyCommand HotkeyUnregister(string key)
+        public HotkeyCommand HotkeyRemoveKey(string key)
         {
+            key = key.Trim().ToUpper();
             short? knownId = null;
-            try
-            {
-                knownId = HotkeyDictionary.FirstOrDefault(x => x.Value == key).Key;
-                HotkeyDictionary.Remove((short)knownId);
-            }
-            catch { if (!SetSuppressExceptions) { throw new InvalidOperationException($"Unable to Unregister '{key}' key."); } else { return this; } }
+
+            if (!HotkeyDictionary.ContainsValue(key))
+            { if (!SetSuppressExceptions) { throw new InvalidOperationException($"Unable to Unregister '{key}' key. Key Not Found"); } else { return this; } }
+
+            knownId = HotkeyDictionary.FirstOrDefault(x => x.Value == key).Key;
+            HotkeyDictionary.Remove((short)knownId);
             return this;
         }
-
-        private void RegAllDictionary()
-        {
-            foreach (KeyValuePair<short, string> p in HotkeyDictionary)
-            {
-                string keyString = p.Value;
-                KeyModifier km = new KeyModifier();
-                while ( keyString.Contains("{") )
-                {
-                    int loc1 = keyString.IndexOf('{');
-                    int loc2 = keyString.IndexOf('}');
-                    string mod = keyString.Substring(loc1 + 1, loc2 - loc1 - 1);
-                    keyString = keyString.Replace("{" + mod + "}", "");
-                    mod = mod.ToUpper();
-                    if (mod == "SHFT" || mod == "SHIFT") { km |= KeyModifier.Shift; }
-                    if (mod == "CTRL" || mod == "CONTROL") { km |= KeyModifier.Ctrl; }
-                    if (mod == "ALT") { km |= KeyModifier.Alt; }
-                    if (mod == "WIN") { km |= KeyModifier.Win; }
-                }
-                try
-                {
-                    int keys = (int)Keys.None;
-
-                    string filteredKeys = keyString.ToUpper();
-
-                    if (filteredKeys != "")
-                    {
-                        if (filteredKeys.Contains("PRINTSCREEN"))
-                        { keys = (int)Keys.PrintScreen; filteredKeys.Replace("PRINTSCREEN", ""); }
-                        else if (filteredKeys.Contains("PRINTSCRN"))
-                        { keys = (int)Keys.PrintScreen; filteredKeys.Replace("PRINTSCRN", ""); }
-
-                        else if (filteredKeys.Contains("PRINT"))
-                        { keys = (int)Keys.Print; filteredKeys.Replace("PRINT", ""); }
-
-                        else if (filteredKeys.Contains("PLAY"))
-                        { keys = (int)Keys.Play; filteredKeys.Replace("PLAY", ""); }
-                        else if (filteredKeys.Contains("PAUSE"))
-                        { keys = (int)Keys.Pause; filteredKeys.Replace("PAUSE", ""); }
-
-                        else if (filteredKeys.Contains("LWIN"))
-                        { keys = (int)Keys.LWin; filteredKeys.Replace("LWIN", ""); }
-                        else if (filteredKeys.Contains("RWIN"))
-                        { keys = (int)Keys.RWin; filteredKeys.Replace("RWIN", ""); }
-                        else if (filteredKeys.Contains("WIN"))
-                        { keys = (int)Keys.LWin; filteredKeys.Replace("WIN", ""); }
-
-                        else if (filteredKeys.Contains("UP"))
-                        { keys = (int)Keys.Up; filteredKeys.Replace("UP", ""); }
-                        else if (filteredKeys.Contains("DOWN"))
-                        { keys = (int)Keys.Down; filteredKeys.Replace("DOWN", ""); }
-                        else if (filteredKeys.Contains("LEFT"))
-                        { keys = (int)Keys.Left; filteredKeys.Replace("LEFT", ""); }
-                        else if (filteredKeys.Contains("RIGHT"))
-                        { keys = (int)Keys.Right; filteredKeys.Replace("RIGHT", ""); }
-
-                        else if (filteredKeys.Contains("SPACE"))
-                        { keys = (int)Keys.Space; filteredKeys.Replace("SPACE", ""); }
-                        else if (filteredKeys.Contains("SPC"))
-                        { keys = (int)Keys.Space; filteredKeys.Replace("SPC", ""); }
-                        else if (filteredKeys.Contains("ESCAPE"))
-                        { keys = (int)Keys.Escape; filteredKeys.Replace("ESCAPE", ""); }
-                        else if (filteredKeys.Contains("ESC"))
-                        { keys = (int)Keys.Escape; filteredKeys.Replace("ESC", ""); }
-                        else if (filteredKeys.Contains("CLEAR"))
-                        { keys = (int)Keys.OemClear; filteredKeys.Replace("CLEAR", ""); }
-                        else if (filteredKeys.Contains("CLR"))
-                        { keys = (int)Keys.OemClear; filteredKeys.Replace("CLR", ""); }
-                        else if (filteredKeys.Contains("CAPSLOCK"))
-                        { keys = (int)Keys.CapsLock; filteredKeys.Replace("CAPSLOCK", ""); }
-                        else if (filteredKeys.Contains("END"))
-                        { keys = (int)Keys.End; filteredKeys.Replace("END", ""); }
-                        else if (filteredKeys.Contains("HOME"))
-                        { keys = (int)Keys.Home; filteredKeys.Replace("HOME", ""); }
-                        else if (filteredKeys.Contains("INSERT"))
-                        { keys = (int)Keys.Insert; filteredKeys.Replace("INSERT", ""); }
-                        else if (filteredKeys.Contains("PAGEUP"))
-                        { keys = (int)Keys.PageUp; filteredKeys.Replace("PAGEUP", ""); }
-                        else if (filteredKeys.Contains("PGUP"))
-                        { keys = (int)Keys.PageUp; filteredKeys.Replace("PGUP", ""); }
-                        else if (filteredKeys.Contains("PAGEDOWN"))
-                        { keys = (int)Keys.PageDown; filteredKeys.Replace("PAGEDOWN", ""); }
-                        else if (filteredKeys.Contains("PGDOWN"))
-                        { keys = (int)Keys.PageDown; filteredKeys.Replace("PGDOWN", ""); }
-
-                        else if (filteredKeys == "]")
-                        { keys = (int)Keys.OemCloseBrackets; }
-                        else if (filteredKeys == "[")
-                        { keys = (int)Keys.OemOpenBrackets; }
-                        else if (filteredKeys == ",")
-                        { keys = (int)Keys.Oemcomma; }
-                        else if (filteredKeys == ".")
-                        { keys = (int)Keys.OemPeriod; }
-                        else if (filteredKeys == "?")
-                        { keys = (int)Keys.OemQuestion; }
-                        else if (filteredKeys == "\"")
-                        { keys = (int)Keys.OemQuotes; }
-                        else if (filteredKeys == "\"")
-                        { keys = (int)Keys.OemQuotes; }
-                        else if (filteredKeys == "|")
-                        { keys = (int)Keys.OemPipe; }
-                        else if (filteredKeys == "+")
-                        { keys = (int)Keys.Oemplus; }
-                        else if (filteredKeys == "-")
-                        { keys = (int)Keys.OemMinus; }
-                        else if (filteredKeys == "*")
-                        { keys = (int)Keys.Multiply; }
-                        else if (filteredKeys == "`")
-                        { keys = (int)Keys.Oemtilde; }
-                        else
-                        { keys = (int)Enum.Parse(typeof(Keys), filteredKeys, true); }
-                    }
-
-                    bool test = new KeyHandler(keys, _form.Handle, p.Key, km).Register();
-
-                    KeyRegisteredCall?.Invoke(test, p.Value, p.Key);
-                }
-                catch (Exception e)
-                {
-                    HotkeyUnregisterAll(false);
-                    if (!SetSuppressExceptions) { throw new InvalidOperationException(e.Message); } else { }
-                }
-            }
-        }
-
         /// <summary>Unregisters all Hotkeys from <see cref="HotkeyDictionary"/>.</summary>
-        /// <param name="clearCurrentKeys">if set to <c>true</c> [Delete all from HotkeyDictionary], else <c>false</c> to [keep HotkeyDictionary].</param>
-        public void HotkeyUnregisterAll(bool clearCurrentKeys = true)
+        /// <param name="removeCurrentKeys">if set to <c>true</c> [Delete all from HotkeyDictionary], else <c>false</c> to [keep HotkeyDictionary].</param>
+        public void HotkeyUnregisterAll(bool removeCurrentKeys = true)
         {
             Dictionary<short, string> copyDictionary = new Dictionary<short, string>(HotkeyDictionary);
             foreach (var p in copyDictionary)
@@ -439,12 +289,128 @@ namespace PCAFFINITY
                 }
                 try
                 {
-                    if (clearCurrentKeys) { HotkeyDictionary.Remove(p.Key); }
-                    new KeyHandler((int)Enum.Parse(typeof(Keys), keyString, true), _form.Handle, p.Key, km).Unregister();
+                    if (removeCurrentKeys) { HotkeyDictionary.Remove(p.Key); }
+
+                    int keys = (int)Keys.None;
+                    if (keyString != "")
+                    { keys = FilterKeytoInt(keyString); }
+
+                    new KeyHandler(keys, _form.Handle, p.Key, km).Unregister();
                     KeyUnregisteredCall?.Invoke(p.Value, p.Key);
                 }
                 catch { }
             }
+        }
+
+        private int FilterKeytoInt(string keyString)
+        {
+            keyString = keyString.ToUpper();
+            int keys;
+
+            if (keyString.Contains("PRINTSCREEN"))
+            { keys = (int)Keys.PrintScreen; keyString.Replace("PRINTSCREEN", ""); }
+            else if (keyString.Contains("PRINTSCRN"))
+            { keys = (int)Keys.PrintScreen; keyString.Replace("PRINTSCRN", ""); }
+
+            else if (keyString.Contains("PRINT"))
+            { keys = (int)Keys.Print; keyString.Replace("PRINT", ""); }
+
+            else if (keyString.Contains("PLAY"))
+            { keys = (int)Keys.Play; keyString.Replace("PLAY", ""); }
+            else if (keyString.Contains("PAUSE"))
+            { keys = (int)Keys.Pause; keyString.Replace("PAUSE", ""); }
+
+            else if (keyString.Contains("LWIN"))
+            { keys = (int)Keys.LWin; keyString.Replace("LWIN", ""); }
+            else if (keyString.Contains("RWIN"))
+            { keys = (int)Keys.RWin; keyString.Replace("RWIN", ""); }
+            else if (keyString.Contains("WIN"))
+            { keys = (int)Keys.LWin; keyString.Replace("WIN", ""); }
+
+            else if (keyString.Contains("UP"))
+            { keys = (int)Keys.Up; keyString.Replace("UP", ""); }
+            else if (keyString.Contains("DOWN"))
+            { keys = (int)Keys.Down; keyString.Replace("DOWN", ""); }
+            else if (keyString.Contains("LEFT"))
+            { keys = (int)Keys.Left; keyString.Replace("LEFT", ""); }
+            else if (keyString.Contains("RIGHT"))
+            { keys = (int)Keys.Right; keyString.Replace("RIGHT", ""); }
+
+            else if (keyString.Contains("SPACE"))
+            { keys = (int)Keys.Space; keyString.Replace("SPACE", ""); }
+            else if (keyString.Contains("SPC"))
+            { keys = (int)Keys.Space; keyString.Replace("SPC", ""); }
+            else if (keyString.Contains("ESCAPE"))
+            { keys = (int)Keys.Escape; keyString.Replace("ESCAPE", ""); }
+            else if (keyString.Contains("ESC"))
+            { keys = (int)Keys.Escape; keyString.Replace("ESC", ""); }
+            else if (keyString.Contains("CLEAR"))
+            { keys = (int)Keys.OemClear; keyString.Replace("CLEAR", ""); }
+            else if (keyString.Contains("CLR"))
+            { keys = (int)Keys.OemClear; keyString.Replace("CLR", ""); }
+            else if (keyString.Contains("CAPSLOCK"))
+            { keys = (int)Keys.CapsLock; keyString.Replace("CAPSLOCK", ""); }
+            else if (keyString.Contains("END"))
+            { keys = (int)Keys.End; keyString.Replace("END", ""); }
+            else if (keyString.Contains("HOME"))
+            { keys = (int)Keys.Home; keyString.Replace("HOME", ""); }
+            else if (keyString.Contains("INSERT"))
+            { keys = (int)Keys.Insert; keyString.Replace("INSERT", ""); }
+            else if (keyString.Contains("PAGEUP"))
+            { keys = (int)Keys.PageUp; keyString.Replace("PAGEUP", ""); }
+            else if (keyString.Contains("PGUP"))
+            { keys = (int)Keys.PageUp; keyString.Replace("PGUP", ""); }
+            else if (keyString.Contains("PAGEDOWN"))
+            { keys = (int)Keys.PageDown; keyString.Replace("PAGEDOWN", ""); }
+            else if (keyString.Contains("PGDOWN"))
+            { keys = (int)Keys.PageDown; keyString.Replace("PGDOWN", ""); }
+
+            else if (keyString == "]")
+            { keys = (int)Keys.OemCloseBrackets; }
+            else if (keyString == "[")
+            { keys = (int)Keys.OemOpenBrackets; }
+            else if (keyString == ",")
+            { keys = (int)Keys.Oemcomma; }
+            else if (keyString == ".")
+            { keys = (int)Keys.OemPeriod; }
+            else if (keyString == "?")
+            { keys = (int)Keys.OemQuestion; }
+            else if (keyString == "\"")
+            { keys = (int)Keys.OemQuotes; }
+            else if (keyString == "|")
+            { keys = (int)Keys.OemPipe; }
+            else if (keyString == "+")
+            { keys = (int)Keys.Oemplus; }
+            else if (keyString == "-")
+            { keys = (int)Keys.OemMinus; }
+            else if (keyString == "*")
+            { keys = (int)Keys.Multiply; }
+            else if (keyString == "`")
+            { keys = (int)Keys.Oemtilde; }
+            else if (keyString == "1")
+            { keys = (int)Keys.D1; }
+            else if (keyString == "2")
+            { keys = (int)Keys.D2; }
+            else if (keyString == "3")
+            { keys = (int)Keys.D3; }
+            else if (keyString == "4")
+            { keys = (int)Keys.D4; }
+            else if (keyString == "5")
+            { keys = (int)Keys.D5; }
+            else if (keyString == "6")
+            { keys = (int)Keys.D6; }
+            else if (keyString == "7")
+            { keys = (int)Keys.D7; }
+            else if (keyString == "8")
+            { keys = (int)Keys.D8; }
+            else if (keyString == "9")
+            { keys = (int)Keys.D9; }
+            else if (keyString == "0")
+            { keys = (int)Keys.D0; }
+            else
+            { keys = (int)Enum.Parse(typeof(Keys), keyString, true); }
+
+            return keys;
         }
 
         /// <summary>Start using hotkeys.</summary>
@@ -460,6 +426,42 @@ namespace PCAFFINITY
             else
             { IsRegistered = true; }
             RegAllDictionary();
+        }
+        private void RegAllDictionary()
+        {
+            foreach (KeyValuePair<short, string> p in HotkeyDictionary)
+            {
+                string keyString = p.Value;
+                KeyModifier km = new KeyModifier();
+                while (keyString.Contains("{"))
+                {
+                    int loc1 = keyString.IndexOf('{');
+                    int loc2 = keyString.IndexOf('}');
+                    string mod = keyString.Substring(loc1 + 1, loc2 - loc1 - 1);
+                    keyString = keyString.Replace("{" + mod + "}", "");
+                    mod = mod.ToUpper();
+                    if (mod == "SHFT" || mod == "SHIFT") { km |= KeyModifier.Shift; }
+                    if (mod == "CTRL" || mod == "CONTROL") { km |= KeyModifier.Ctrl; }
+                    if (mod == "ALT") { km |= KeyModifier.Alt; }
+                    if (mod == "WIN") { km |= KeyModifier.Win; }
+                }
+                try
+                {
+                    int keys = (int)Keys.None;
+
+                    if (keyString != "")
+                    { keys = FilterKeytoInt(keyString); }
+
+                    bool test = new KeyHandler(keys, _form.Handle, p.Key, km).Register();
+
+                    KeyRegisteredCall?.Invoke(test, p.Value, p.Key);
+                }
+                catch (Exception e)
+                {
+                    HotkeyUnregisterAll(false);
+                    if (!SetSuppressExceptions) { throw new InvalidOperationException(e.Message); } else { }
+                }
+            }
         }
         /// <summary>Stop using hotkeys.</summary>
         /// <exception cref="InvalidOperationException">HotkeyCommands is not started. Try starting it first.</exception>
