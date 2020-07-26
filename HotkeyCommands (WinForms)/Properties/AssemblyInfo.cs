@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HotkeyCommands")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("HotkeyCommands (WinForms)")]
+[assembly: AssemblyDescription("Hotkey Commands for WinForms")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("PC Affinity")]
-[assembly: AssemblyProduct("HotkeyCommands")]
+[assembly: AssemblyProduct("HotkeyCommands (WinForms)")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

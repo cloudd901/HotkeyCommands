@@ -8,6 +8,7 @@ namespace HotkeyCommands_Example
     public partial class Form1 : HotkeysExtensionForm
     {
         public HotkeyCommand HotkeyCommand { get; set; }
+
         private readonly object _Lock = new object();
 
         public Form1()

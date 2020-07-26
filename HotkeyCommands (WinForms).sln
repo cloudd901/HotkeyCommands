@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29209.62
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotkeyCommands", "HotkeyCommands\HotkeyCommands.csproj", "{54188A92-BC90-48D5-86B1-48FB0E9B842C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotkeyCommands (WinForms)", "HotkeyCommands (WinForms)\HotkeyCommands (WinForms).csproj", "{54188A92-BC90-48D5-86B1-48FB0E9B842C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotkeyCommands Example", "HotkeyCommands Example\HotkeyCommands Example.csproj", "{34BC6B80-B262-45D2-AB4F-4BACC50AFDC4}"
 EndProject

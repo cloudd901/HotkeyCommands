@@ -80,9 +80,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HotkeyCommands\HotkeyCommands.csproj">
+    <ProjectReference Include="..\HotkeyCommands %28WinForms%29\HotkeyCommands %28WinForms%29.csproj">
       <Project>{54188a92-bc90-48d5-86b1-48fb0e9b842c}</Project>
-      <Name>HotkeyCommands</Name>
+      <Name>HotkeyCommands %28WinForms%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

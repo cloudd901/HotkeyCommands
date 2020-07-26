@@ -7,7 +7,7 @@ using System.Windows.Forms;
 namespace PCAFFINITY
 {
     /* 
-     * - Reference HotkeyCommands.dll in your Forms.cs.
+     * - Reference HotkeyCommands (WinForms).dll in your Forms.cs.
      * - Set the Extension method next to your Form class.
      * - Create new instance of HotkeyCommands.
      * - Set Action KeyActionCall (Returns Current Form and Key Pressed)
@@ -17,8 +17,7 @@ namespace PCAFFINITY
     /// <seealso cref="System.IDisposable" />
     /// <example>This is how to quickly Initiate Hotkeys:
     ///     <code>
-    ///         <para>using HotkeyCommands;</para>
-    ///         <para>using HotkeyCommands.HKCFormExtension;</para>
+    ///         <para>using PCAFFINITY;</para>
     ///         <para>using System;</para>
     ///         <para>using System.Windows.Forms;</para>
     ///         <para>namespace YourHotkeyProgram</para>
