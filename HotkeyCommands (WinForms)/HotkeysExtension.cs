@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace PCAFFINITY
+﻿namespace PCAFFINITY
 {
+    using System;
+    using System.Windows.Forms;
+
     /// <exclude />
     public class HotkeysExtensionForm : Form
     {
@@ -10,8 +10,16 @@ namespace PCAFFINITY
 
         /// <exclude />
         public delegate void KeyPressedCallEventHandler(Form f, short k);
+
         /// <exclude />
         public event KeyPressedCallEventHandler KeyPressedCall;
+
+        /// <exclude />
+        public virtual void OnKeyPressedCall(IntPtr k)
+        {
+            KeyPressedCall?.Invoke(this, (short)k.ToInt32());
+        }
+
         /// <exclude />
         protected override void WndProc(ref Message m)
         {
@@ -22,10 +30,5 @@ namespace PCAFFINITY
             }
             base.WndProc(ref m);
         }
-        /// <exclude />
-        public virtual void OnKeyPressedCall(IntPtr k)
-        {
-            KeyPressedCall?.Invoke(this, (short)k.ToInt32());
-        }//Send to Parent 'HotkeyCommand'
     }
 }
