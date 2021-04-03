@@ -465,7 +465,7 @@
 
         private static int FilterKeytoInt(string keyString)
         {
-            keyString = keyString.ToUpper();
+            keyString = keyString.Trim().ToUpper();
             int keys;
 
             if (keyString.Contains("PRINTSCREEN"))
@@ -608,6 +608,10 @@
             {
                 keys = (int)Keys.OemMinus;
             }
+            else if (keyString == "_")
+            {
+                keys = (int)Keys.OemMinus;
+            }
             else if (keyString == "*")
             {
                 keys = (int)Keys.Multiply;
@@ -616,7 +620,15 @@
             {
                 keys = (int)Keys.Oemtilde;
             }
+            else if (keyString == "~")
+            {
+                keys = (int)Keys.Oemtilde;
+            }
             else if (keyString == "1")
+            {
+                keys = (int)Keys.D1;
+            }
+            else if (keyString == "!")
             {
                 keys = (int)Keys.D1;
             }
@@ -624,7 +636,15 @@
             {
                 keys = (int)Keys.D2;
             }
+            else if (keyString == "@")
+            {
+                keys = (int)Keys.D2;
+            }
             else if (keyString == "3")
+            {
+                keys = (int)Keys.D3;
+            }
+            else if (keyString == "#")
             {
                 keys = (int)Keys.D3;
             }
@@ -632,7 +652,15 @@
             {
                 keys = (int)Keys.D4;
             }
+            else if (keyString == "$")
+            {
+                keys = (int)Keys.D4;
+            }
             else if (keyString == "5")
+            {
+                keys = (int)Keys.D5;
+            }
+            else if (keyString == "%")
             {
                 keys = (int)Keys.D5;
             }
@@ -640,7 +668,15 @@
             {
                 keys = (int)Keys.D6;
             }
+            else if (keyString == "^")
+            {
+                keys = (int)Keys.D6;
+            }
             else if (keyString == "7")
+            {
+                keys = (int)Keys.D7;
+            }
+            else if (keyString == "&")
             {
                 keys = (int)Keys.D7;
             }
@@ -652,7 +688,15 @@
             {
                 keys = (int)Keys.D9;
             }
+            else if (keyString == "(")
+            {
+                keys = (int)Keys.D9;
+            }
             else if (keyString == "0")
+            {
+                keys = (int)Keys.D0;
+            }
+            else if (keyString == ")")
             {
                 keys = (int)Keys.D0;
             }
